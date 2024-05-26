@@ -2,8 +2,8 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <unordered_set>
 using namespace std;
-
 
 int check()
 {
@@ -160,29 +160,6 @@ void create_time(int size)
     getchar();
 }
 
-vector<int> delete_dublicate(vector<int>& data)
-{
-    vector<int> result;
-    bool flag = false;
-    for (auto it = data.begin(); it != data.end(); it++)
-    {
-        for (auto iter = it + 1; iter != data.end(); iter++)
-        {
-            if (*it == *iter)
-            {
-                data.erase(iter--);
-                flag = true;
-            }
-        }
-        if (!flag)
-        {
-            result.push_back(*it);
-        }
-        flag = false;
-    }
-    return result;
-}
-
 void delete_node(Tree& obj)
 {
     cout << "УДАЛЕНИЕ ЭЛЕМЕНТА" << endl;
@@ -192,48 +169,46 @@ void delete_node(Tree& obj)
     getchar();
 }
 
-void exercise(Tree& obj)
-{
-    int number;
-    bool flag = true;
-    vector<int> a;
-    cout << "ВВОД ЗНАЧЕНИЙ ВЕКТОРА:" << endl;
-    while (flag)
-    {
-        cout << "Введите элемент: ";
-        if (!(cin >> number) || (cin.peek() != '\n'))
-        {
-            cin.clear();
-            while (cin.get() != '\n');
-            cout << "Некорректное значение. Попробуйте еще раз." << endl;
-        }
-        else
-        {
-            a.push_back(number);
-        }
-        cout << "Продолжить ввод данных?" << endl;
-        cout << "1 - Да" << endl;
-        cout << "2 - Нет" << endl;
-        cout << "Операция: ";
-        int n = check();
-        while (n > 2 || n <= 0)
-        {
-            cout << "Некорректное значение. Попробуйте еще раз." << endl << "Операция: ";
-            n = check();
-        }
-        if (n == 1)
-            flag = true;
-        else
-            flag = false;
+void insert_dup(Node*& root, int data, vector<int>& duplicates) {
+    if (root == nullptr) {
+        root = new Node(data);
     }
-    vector<int> tmp;
-    tmp = delete_dublicate(a);
-    for (auto it = tmp.begin(); it != tmp.end(); ++it)
-    {
-        cout << *it;
+    else if (data < root->_data) {
+        insert_dup(root->_left, data, duplicates);
     }
-    getchar();
+    else if (data > root->_data) {
+        insert_dup(root->_right, data, duplicates);
+    }
+    else {
+        duplicates.push_back(data);
+    }
 }
+
+void findDuplicates(vector<int>& nums) {
+    Node* root = nullptr;
+    std::vector<int> duplicates;
+
+    for (int num : nums) {
+        insert_dup(root, num, duplicates);
+    }
+
+    if (duplicates.size() > 0) {
+        std::cout << "Найденные дубликаты: ";
+        for (int dup : duplicates) {
+            std::cout << dup << " ";
+        }
+        cout << endl;
+    }
+    else {
+        cout << "Дубликаты не найденны" << endl;
+    }
+}
+
+void exercise(Tree& obj) {
+    vector<int> nums = { 3, 2, 2, 4, 4, 5, 5, 6, 8, 10, 3, 50, 20, 20, 15, 19, 11, 7 };
+    findDuplicates(nums);
+}
+
 
 int muny()
 {
